@@ -1,5 +1,7 @@
 # Ex-3-RECOGNITION-OF-A-VALID-ARITHMETIC-EXPRESSION-THAT-USES-OPERATOR-AND-USING-YACC
-# Date:25/04/2025
+# NAME: DAISY R
+# REG NO: 212223220016
+# Date: 22/04/25
 # AIM
 To write a yacc program to recognize a valid arithmetic expression that uses operator +,- ,* and /.
 # ALGORITHM
@@ -12,74 +14,78 @@ To write a yacc program to recognize a valid arithmetic expression that uses ope
 7.	Compile these with the C compiler as gcc lex.yy.c y.tab.c
 8.	Enter an arithmetic expression as input and the tokens are identified as output.
 # PROGRAM
-```
-arth.l
+# FLEX FILE:
 
+```
 %{
 #include "y.tab.h"
 %}
 
 %%
 
-"="          { printf("\nOperator is EQUAL"); return ASSIGN; }
-"+"          { printf("\nOperator is PLUS"); return PLUS; }
-"-"          { printf("\nOperator is MINUS"); return MINUS; }
-"/"          { printf("\nOperator is DIVISION"); return DIVISION; }
-"*"          { printf("\nOperator is MULTIPLICATION"); return MULTIPLICATION; }
-[a-zA-Z_][a-zA-Z0-9_]*  { printf("\nIdentifier is %s", yytext); return ID; }
-[ \t]        { /* Ignore whitespace */ }
-\n           { return 0; }
-.            { printf("\nUnknown character: %s", yytext); return yytext[0]; }
+"="     { printf("\nOperator is EQUAL"); return '='; }
+"+"     { printf("\nOperator is PLUS"); return '+'; }
+"-"     { printf("\nOperator is MINUS"); return '-'; }
+"*"     { printf("\nOperator is MULTIPLICATION"); return '*'; }  
+"/"     { printf("\nOperator is DIVISION"); return '/'; }
+
+[a-zA-Z_][a-zA-Z0-9_]* {
+    printf("\nIdentifier is %s", yytext);
+    return ID;
+}
+
+[ \t]+  ;           // Ignore spaces and tabs
+\n      { return 0; }
+
+.       { return yytext[0]; }
 
 %%
-
 int yywrap() {
     return 1;
 }
+```
 
-arth.y
+
+# BISON:
+
+```
 %{
 #include <stdio.h>
-
-/* Declarations for tokens will come from the lexer (e.g., Flex) */
+#include <stdlib.h>
 %}
 
-%token ID PLUS MINUS MULTIPLICATION DIVISION ASSIGN
+%token ID
 
 %%
 
 statement:
-    ID ASSIGN E {
-        printf("\nValid arithmetic expression\n");
-    }
-;
+      ID '=' E        { printf("\nAssignment expression is valid\n"); }
+    | E               { printf("\nValid arithmetic expression\n"); }
+    ;
 
 E:
-    E PLUS ID
-  | E MINUS ID
-  | E MULTIPLICATION ID
-  | E DIVISION ID
-  | ID
-;
+      E '+' ID        { }
+    | E '-' ID        { }
+    | E '*' ID        { }
+    | E '/' ID        { }
+    | ID              { }
+    ;
 
 %%
 
-extern FILE *yyin;
-
 int main() {
-    yyin = stdin; // Use standard input unless redirected
-    yyparse();
-    return 0;
+    printf("Enter an expression:\n");
+    return yyparse();
 }
 
 void yyerror(char *s) {
     fprintf(stderr, "Error: %s\n", s);
 }
 ```
+
 # OUTPUT
-![Screenshot 2025-04-25 152335](https://github.com/user-attachments/assets/b3539118-2bda-47d4-88d4-9f813ddf2904)
 
-
+![image](https://github.com/user-attachments/assets/3dddf4bf-4f5a-44c7-9d89-2f424c060ccb)
 
 
 # RESULT
